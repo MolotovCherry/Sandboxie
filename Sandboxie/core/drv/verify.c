@@ -224,6 +224,8 @@ NTSTATUS KphVerifySignature(
     _In_ ULONG SignatureSize
     )
 {
+	return STATUS_SUCCESS;
+	
     NTSTATUS status;
     BCRYPT_ALG_HANDLE signAlgHandle = NULL;
     BCRYPT_KEY_HANDLE keyHandle = NULL;
@@ -1096,7 +1098,23 @@ CleanupExit:
 
     if(stream)      Stream_Close(stream);
 
-    return status;
+    // LICENSE PATCH
+    Verify_CertInfo.active = 1;
+    Verify_CertInfo.expired = 0;
+    Verify_CertInfo.outdated = 0;
+    Verify_CertInfo.grace_period = 0;
+    Verify_CertInfo.locked = 0;
+    Verify_CertInfo.lock_req = 0;
+    Verify_CertInfo.type = eCertEternal;
+    Verify_CertInfo.level = eCertMaxLevel;
+    Verify_CertInfo.opt_desk = 1;
+    Verify_CertInfo.opt_net = 1;
+    Verify_CertInfo.opt_enc = 1;
+    Verify_CertInfo.opt_sec = 1;
+	return STATUS_SUCCESS;
+	// END LICENSE PATCH
+	
+	return status;
 }
 
 
